@@ -94,39 +94,74 @@ void Geometry::draw(Program * m_Program/* = NULL*/)
      *  function.
      */
 
-    glGenVertexArrays(1, & mVertexArray);
+    // Activate our vertex array
     glBindVertexArray(mVertexArray);
 
-    float positions[9] = { -0.5f, -0.5f, 0.0f,
-                            0.5f, -0.5f, 0.0f,
-                            0.0f, 1.0f, 0.0f };
-
-    if (vertexParam) {
-        glGenBuffers(1, & mVertexBuffer);
+    if (vertexParam)
+    {
+        // Activate our vertex buffer
         glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
-        glBufferData(GL_ARRAY_BUFFER, 3 * 3 * sizeof(GLfloat), & positions[0], GL_DYNAMIC_DRAW);
+        // Upload the position data to the GPU
+        glBufferData(GL_ARRAY_BUFFER,
+                     mVertices.size() * 3 * sizeof(GLfloat),    // Byte size of the data. # positions * # components per position * byte size of a float.
+                     & mVertices[0],                            // Pointer to the first element
+                     GL_DYNAMIC_DRAW);
 
+        // Activate our parameter on the GPU
+        glEnableVertexAttribArray(vertexParam->getHandle());
+        // Tell OpenGL to use the current active buffer for the vertex attribute we just activated.
+        glVertexAttribPointer(vertexParam->getHandle(),
+                              3,        // Components per value (x, y, z)
+                              GL_FLOAT, // The data type
+                              GL_FALSE, // If the values are normalized
+                              0,        // The stride, in case we aren't just storing colours in our array
+                              0);       // 0, so it takes the current active buffer (mVertexBuffer)
     }
 
-    glEnableVertexAttribArray(vertexParam->getHandle());
-    glVertexAttribPointer(vertexParam->getHandle(), 3, GL_FLOAT, GL_FALSE, 0, 0);
+    if (colorParam)
+    {
+        // Activate our colour buffer
+        glBindBuffer(GL_ARRAY_BUFFER, mColorBuffer);
+        // Upload the colour data to the GPU
+        glBufferData(GL_ARRAY_BUFFER,
+                     mColors.size() * 4 * sizeof(GLfloat),  // Byte size of the data. # colors * # components per color * byte size of a float.
+                     & mColors[0],                          // Pointer to the first element
+                     GL_DYNAMIC_DRAW);
 
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+        // Activate our parameter on the GPU
+        glEnableVertexAttribArray(colorParam->getHandle());
+        // Tell OpenGL to use the current active buffer for the vertex attribute we just activated.
+        glVertexAttribPointer(colorParam->getHandle(),
+                              4,        // Components per value (R, G, B, A)
+                              GL_FLOAT, // The data type
+                              GL_FALSE, // If the values are normalized
+                              0,        // The stride, in case we aren't just storing colours in our array.
+                              0);       // 0, so it takes the current active buffer (mColorBuffer)
+    }
+
+    // Draw our geometry!
+    glDrawArrays(mPrimitiveType,    // The primitive type
+                 0,                 // Start at vertex 0
+                 mVertices.size()); // The number of vertices, NOT PRIMITIVES TO BE DRAWN
 
     m_Program->deactivate();
-
+    // Deactivate all buffers
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    if (vertexParam) {
+    if (vertexParam)
+    {
+        // Disable the active vertex attribute
         glDisableVertexAttribArray(vertexParam->getHandle());
-        glDeleteBuffers(1, & mVertexBuffer);
-        mVertexBuffer = 0;
     }
 
-    glBindVertexArray(0);
-    glDeleteVertexArrays(1, & mVertexArray);
-    delete [] positions;
+    if (colorParam)
+    {
+        // Disable the active color attribute
+        glDisableVertexAttribArray(colorParam->getHandle());
+    }
 
+    // Deactivate our vertex array
+    glBindVertexArray(0);
 }
 
 void Geometry::translate(Vector3 m_Translation)
@@ -135,6 +170,11 @@ void Geometry::translate(Vector3 m_Translation)
      *  @todo   assignment 1
      *  translate every vertex by the given translation
      */
+    for(size_t i = 0; i < mVertices.size(); ++i)
+    {
+        mVertices[i].x = mVertices[i].x - m_Translation.x;
+        mVertices[i].y = mVertices[i].y + m_Translation.y;
+    }
 }
 
 void Geometry::scale(float m_ScaleFactor)
@@ -145,6 +185,13 @@ void Geometry::scale(float m_ScaleFactor)
      *  hint: you have to scale using both mScaleFactor (the scale factor the mesh is currently in)
      *  and m_ScaleFactor (the new scale factor to be)
      */
+
+    // Multiply every vertex by the scale factor ratio.
+    for(size_t i = 0; i < mVertices.size(); ++i)
+    {
+        mVertices[i].x = mVertices[i].x * (m_ScaleFactor / mScaleFactor);
+        mVertices[i].y = mVertices[i].y * (m_ScaleFactor / mScaleFactor);
+    }
 
     mScaleFactor = m_ScaleFactor;
 }
@@ -195,7 +242,7 @@ void Geometry::parseFile()
         if(tokens[0].compare("v") == 0)
         {
             Vector3 curVertex;
-			for(size_t i = 1; i < tokens.size(); ++i)
+            for(size_t i = 1; i < tokens.size(); ++i)
 			{
 				curVertex.elements[i - 1] = atof(tokens[i].c_str());
 			}

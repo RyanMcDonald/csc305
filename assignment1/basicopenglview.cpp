@@ -53,6 +53,13 @@ void BasicOpenGLView::scaleGeometries(float m_ScaleFactor)
      *  @todo   assignment 1
      *  loop over all geometries and scale them
      */
+    std::map<std::string, Geometry *>::iterator it = mGeometries.begin();
+
+    while (it != mGeometries.end())
+    {
+        it->second->scale(m_ScaleFactor);
+        ++it;
+    }
 }
 
 void BasicOpenGLView::initializeGL()
@@ -120,8 +127,15 @@ void BasicOpenGLView::mouseMoveEvent(QMouseEvent *event)
      *  convert the mouse event coordinate into OpenGL view coordinates.
      *  store them in curPoint.
      */
-
     Vector3 curPoint;
+    curPoint.x = ((event->posF().x() * 2) / width()) - 1;
+    curPoint.y = ((event->posF().y() * 2) / height()) - 1;
+
+    // Boundaries
+    if (curPoint.x < -1) curPoint.x = -1;
+    if (curPoint.x > 1) curPoint.x = 1;
+    if (curPoint.y < -1) curPoint.y = -1;
+    if (curPoint.y > 1) curPoint.y = 1;
 
     // to avoid jumping when a new drag started, we check if this is our first dragging frame
     // in that case we only store our current mouse position
@@ -138,6 +152,18 @@ void BasicOpenGLView::mouseMoveEvent(QMouseEvent *event)
      *  the previous.
      *  translate all geometries accordingly
      */
+    Vector3 translation;
+    translation.x = mLastMousePos.x - curPoint.x;
+    translation.y = mLastMousePos.y - curPoint.y;
+
+    std::map<std::string, Geometry *>::iterator it = mGeometries.begin();
+
+    while (it != mGeometries.end())
+    {
+        it->second->translate(translation);
+        ++it;
+    }
 
     mLastMousePos = curPoint;
+
 }

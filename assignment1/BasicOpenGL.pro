@@ -40,10 +40,6 @@ FORMS    += mainwindow.ui
 mac {
      OBJECTIVE_SOURCES  +=  core_profile_attributes.mm
      LIBS += -framework Foundation -framework Cocoa
-} else {
-     unix {
-          LIBS += -lGLEW
-     }
 }
 
 win32 {

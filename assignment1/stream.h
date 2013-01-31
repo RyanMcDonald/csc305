@@ -2,7 +2,6 @@
 #define STREAM_H
 
 #include <string>
-#include <cstdio>
 
 /**
  *	@class	Stream
