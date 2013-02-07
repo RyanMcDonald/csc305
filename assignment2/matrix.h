@@ -1,6 +1,9 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+class Matrix3x3;
+class Matrix4x4;
+
 /**
  *  @todo assignment two
  *  1. extend these matrix classes to support all the basic linear algebra functions
@@ -40,8 +43,16 @@ public:
 
     Matrix3x3 operator + (Matrix3x3);
     Matrix3x3 operator - (Matrix3x3);
-    Matrix3x3 operator * (int);
+    Matrix3x3 operator * (float);
     Matrix3x3 operator * (Matrix3x3);
+
+    void scale(float x, float y, float z);
+    void translate(float x, float y, float z);
+    void rotateX(float r);
+    void rotateY(float r);
+    void rotateZ(float r);
+
+    Matrix4x4 to4x4();
 
     void printMatrix();
 
@@ -75,8 +86,16 @@ public:
 
     Matrix4x4 operator + (Matrix4x4);
     Matrix4x4 operator - (Matrix4x4);
-    Matrix4x4 operator * (int);
+    Matrix4x4 operator * (float);
     Matrix4x4 operator * (Matrix4x4);
+
+    void scale(float x, float y, float z, float w);
+    void translate(float x, float y, float z, float w);
+    void rotateX(float r);
+    void rotateY(float r);
+    void rotateZ(float r);
+
+    Matrix3x3 to3x3();
 
     void printMatrix();
 
