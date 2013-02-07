@@ -13,4 +13,4 @@
 *.a
 
 # Qt User Files
-#.user
+*.user
