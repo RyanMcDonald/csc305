@@ -44,13 +44,34 @@ Matrix3x3 Matrix3x3::operator - (Matrix3x3 matrix)
     return temp;
 }
 
-Matrix3x3 Matrix3x3::operator * (Matrix3x3 matrix)
+Matrix3x3 Matrix3x3::operator * (int scalar)
 {
     Matrix3x3 temp;
     for (int i = 0; i <= 8; i++)
     {
-        temp.elements[i] = this->elements[i] * matrix.elements[i];
+        temp.elements[i] = elements[i] * scalar;
     }
+    return temp;
+}
+
+Matrix3x3 Matrix3x3::operator * (Matrix3x3 matrix)
+{
+    Matrix3x3 temp;
+
+    // Get rid of the 1's in the diagonal
+    temp.elements[0] = temp.elements[4] = temp.elements[8] = 0;
+
+    for (int row = 0; row < 3; row++)
+    {
+        for (int col = 0; col < 3; col++)
+        {
+            for (int inner = 0; inner < 3; inner++)
+            {
+                temp.elements[3*col + row] += elements[3*inner + row] * matrix.elements[inner + 3*col];
+            }
+        }
+    }
+
     return temp;
 }
 
@@ -74,13 +95,34 @@ Matrix4x4 Matrix4x4::operator - (Matrix4x4 matrix)
     return temp;
 }
 
-Matrix4x4 Matrix4x4::operator * (Matrix4x4 matrix)
+Matrix4x4 Matrix4x4::operator * (int scalar)
 {
     Matrix4x4 temp;
     for (int i = 0; i <= 15; i++)
     {
-        temp.elements[i] = this->elements[i] * matrix.elements[i];
+        temp.elements[i] = elements[i] * scalar;
     }
+    return temp;
+}
+
+Matrix4x4 Matrix4x4::operator * (Matrix4x4 matrix)
+{
+    Matrix4x4 temp;
+
+    // Get rid of the 1's in the diagonal
+    temp.elements[0] = temp.elements[5] = temp.elements[10] = temp.elements[15] = 0;
+
+    for (int row = 0; row < 4; row++)
+    {
+        for (int col = 0; col < 4; col++)
+        {
+            for (int inner = 0; inner < 4; inner++)
+            {
+                temp.elements[4*col + row] += elements[4*inner + row] * matrix.elements[inner + 4*col];
+            }
+        }
+    }
+
     return temp;
 }
 

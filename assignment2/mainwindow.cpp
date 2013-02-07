@@ -23,20 +23,26 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->addButton, SIGNAL(clicked()), this, SLOT(addGeometry()));
     connect(ui->removeButton, SIGNAL(clicked()), this, SLOT(removeGeometry()));
 
-    Matrix3x3 *m31 = new Matrix3x3();
-    Matrix3x3 *m32 = new Matrix3x3();
+    Matrix4x4 *matrix1 = new Matrix4x4();
+    Matrix3x3 *matrix2 = new Matrix3x3();
 
-    Matrix3x3 newMatrix;
+    for (int i = 0; i <= 15; i ++)
+    {
+        matrix1->elements[i] = i;
+    }
 
-    newMatrix = *m31 + *m32;
-    newMatrix.printMatrix();
+    Matrix4x4 newMatrix1;
+    newMatrix1 = *matrix1 * 2;
+    newMatrix1.printMatrix();
 
-    newMatrix = newMatrix * newMatrix;
-    newMatrix.printMatrix();
+    for (int i = 0; i <= 8; i ++)
+    {
+        matrix2->elements[i] = i;
+    }
 
-    newMatrix = newMatrix - *m32;
-    newMatrix.printMatrix();
-
+    Matrix3x3 newMatrix2;
+    newMatrix2 = *matrix2 * 2;
+    newMatrix2.printMatrix();
 
 }
 

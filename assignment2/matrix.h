@@ -40,6 +40,7 @@ public:
 
     Matrix3x3 operator + (Matrix3x3);
     Matrix3x3 operator - (Matrix3x3);
+    Matrix3x3 operator * (int);
     Matrix3x3 operator * (Matrix3x3);
 
     void printMatrix();
@@ -74,6 +75,7 @@ public:
 
     Matrix4x4 operator + (Matrix4x4);
     Matrix4x4 operator - (Matrix4x4);
+    Matrix4x4 operator * (int);
     Matrix4x4 operator * (Matrix4x4);
 
     void printMatrix();
