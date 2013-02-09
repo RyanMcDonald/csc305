@@ -24,14 +24,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->addButton, SIGNAL(clicked()), this, SLOT(addGeometry()));
     connect(ui->removeButton, SIGNAL(clicked()), this, SLOT(removeGeometry()));
 
-    Vector4 v1 = Vector4(3, 1, 2, 1);
-    Vector3 v2 = Vector3(5, 1, 2);
-
-    Vector3 newVector3 = v1.toVector3();
-    newVector3.printVector();
-
-    Vector4 newVector4 = v2.toVector4();
-    newVector4.printVector();
 }
 
 void MainWindow::drawOpenGL()

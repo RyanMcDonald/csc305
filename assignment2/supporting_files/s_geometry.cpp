@@ -475,15 +475,9 @@ bool Geometry::initDefaultShader()
             "out vec4 vColor;\n"
             "void main()\n"
             "{\n"
-            "   if(usePostMultiply == 0) {\n"
-            "       gl_Position = projectionMatrix * viewMatrix * modelMatrix * vertex;\n"
-            "   }\n"
-            "   else {\n"
-            "       gl_Position = projectionMatrix * viewMatrix * vertex * modelMatrix;\n"
-            "   }\n"
+            "   gl_Position = projectionMatrix * viewMatrix * modelMatrix * vertex;\n"
             "   vColor = color;\n"
             "}";
-
     const std::string fragmentShader = "#version 150\n"
             "in vec4 vColor;\n"
             "out vec4 fColor;\n"
@@ -491,17 +485,17 @@ bool Geometry::initDefaultShader()
             "{\n"
             "   fColor = vColor;\n"
             "}";
-	
-	
+
+
     mProgram = new Program();
-	
+
     Shader * vShader = new Shader(vertexShader, Shader::VERTEX);
     vShader->load();
     Shader * fShader = new Shader(fragmentShader, Shader::FRAGMENT);
     fShader->load();
-	
+
     mProgram->push_back(vShader);
     mProgram->push_back(fShader);
-	
+
     return mProgram->link();
 }
