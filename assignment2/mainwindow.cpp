@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -23,11 +24,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->addButton, SIGNAL(clicked()), this, SLOT(addGeometry()));
     connect(ui->removeButton, SIGNAL(clicked()), this, SLOT(removeGeometry()));
 
-    Matrix3x3 matrix1;
-    matrix1.rotateZ(30);
-    matrix1.printMatrix();
+    Vector4 v1 = Vector4(3, 1, 2, 1);
+    Vector3 v2 = Vector3(5, 1, 2);
 
+    Vector3 newVector3 = v1.toVector3();
+    newVector3.printVector();
 
+    Vector4 newVector4 = v2.toVector4();
+    newVector4.printVector();
 }
 
 void MainWindow::drawOpenGL()

@@ -1,6 +1,9 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
+class Vector3;
+class Vector4;
+
 /**
  *  @todo assignment two
  *  extend these classes to support the basic linear algebra functions, including dot and cross product
@@ -38,6 +41,15 @@ public:
      */
     Vector3(float m_x = 0.0f, float m_y = 0.0f, float m_z = 0.0f);
 
+    Vector3 operator + (Vector3 vector);
+    Vector3 operator - (Vector3 vector);
+    Vector3 operator * (float multiplier);
+    float dotProduct(Vector3 vector);
+    Vector3 crossProduct(Vector3 vector);
+    float squaredLength();
+    Vector3 normalizeVector();
+    Vector4 toVector4();
+    void printVector();
 
 };
 
@@ -73,6 +85,15 @@ public:
      * @param m_w the w value
      */
     Vector4(float m_x = 0.0f, float m_y = 0.0f, float m_z = 0.0f, float m_w = 1.0f);
+
+    Vector4 operator + (Vector4 vector);
+    Vector4 operator - (Vector4 vector);
+    Vector4 operator * (float multiplier);
+    float dotProduct(Vector4 vector);
+    float squaredLength();
+    Vector4 normalizeVector();
+    Vector3 toVector3();
+    void printVector();
 };
 
 #endif // VECTOR_H
