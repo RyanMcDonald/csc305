@@ -100,6 +100,7 @@ public:
     Matrix3x3 to3x3();
 
     Matrix4x4 buildOrthoProjectionMatrix(float left, float right, float bottom, float top, float near, float far);
+    Matrix4x4 buildPerspectiveProjectionMatrix(float fov, float aspectRatio, float near, float far);
     Matrix4x4 buildViewMatrix(Vector3 eye, Vector3 gaze, Vector3 up);
 
     void printMatrix();

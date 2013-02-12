@@ -42,20 +42,26 @@ void BasicOpenGLView::initializeGL()
      *  @todo assignment two
      *  initialize the mViewMatrix and mProjectionMatrix with starting values here
      */
+    // Arbitrary camera values
     Vector3 eye = Vector3(0.0f, 0.0f, 2.0f);
     Vector3 gaze = Vector3(0.0f, 0.0f, 0.0f);
     Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
     mViewMatrix = mViewMatrix.buildViewMatrix(eye, gaze, up);
-    mViewMatrix.printMatrix();
+
+    // Arbitrary l, r, b, t, n, f values for orthographic projection
     float ortho_left = -1.5;
     float ortho_right = 1.5;
     float ortho_bottom = -1.5;
     float ortho_top = 1.5;
-    float ortho_near = 2.0;
-    float ortho_far = -100.0;
-
+    float ortho_near = -0.1;
+    float ortho_far = -500.0;
     mProjectionMatrix = mProjectionMatrix.buildOrthoProjectionMatrix(ortho_left, ortho_right, ortho_bottom, ortho_top, ortho_near, ortho_far);
-    //loadGeometry("3D_objects/cube.obj");
+
+    //float fov = 90.0;
+    //float aspectRatio = (float) width() / (float) height();
+    //float perspec_near = 0.1;
+    //float perspec_far = -4.0;
+    //mProjectionMatrix = mProjectionMatrix.buildPerspectiveProjectionMatrix(fov, aspectRatio, perspec_near, perspec_far);
 }
 
 void BasicOpenGLView::resizeGL(int width, int height)

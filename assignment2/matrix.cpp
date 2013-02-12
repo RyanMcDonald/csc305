@@ -293,26 +293,23 @@ Matrix4x4 Matrix4x4::buildViewMatrix(Vector3 eye, Vector3 gaze, Vector3 up)
 {
     Matrix4x4 viewMatrix;
 
-    // See page 147 in textbook
-    float gazeLength = sqrt(gaze.squaredLength());
-    std::cout << "Gaze length: " << gazeLength << std::endl;
-
-    Vector3 w = gaze.normalizeVector() * (-1);
+    // See page 147 in textbook... had to modify it a bit apparently
+    Vector3 w = (eye - gaze).normalizeVector();
     Vector3 u = up.crossProduct(w).normalizeVector();
     Vector3 v = w.crossProduct(u);
 
     viewMatrix.elements[0] = u.x;
-    viewMatrix.elements[1] = v.x;
-    viewMatrix.elements[2] = w.x;
+    viewMatrix.elements[1] = u.y;
+    viewMatrix.elements[2] = u.z;
     viewMatrix.elements[3] = 0;
 
-    viewMatrix.elements[4] = u.y;
+    viewMatrix.elements[4] = v.x;
     viewMatrix.elements[5] = v.y;
-    viewMatrix.elements[6] = w.y;
+    viewMatrix.elements[6] = v.z;
     viewMatrix.elements[7] = 0;
 
-    viewMatrix.elements[8] = u.z;
-    viewMatrix.elements[9] = v.z;
+    viewMatrix.elements[8] = w.x;
+    viewMatrix.elements[9] = w.y;
     viewMatrix.elements[10] = w.z;
     viewMatrix.elements[11] = 0;
 
@@ -333,6 +330,25 @@ Matrix4x4 Matrix4x4::buildOrthoProjectionMatrix(float left, float right, float b
     orthoMatrix.elements[14] = (-1)*((far + near)/(far - near));
 
     return orthoMatrix;
+}
+
+Matrix4x4 Matrix4x4::buildPerspectiveProjectionMatrix(float fov, float aspectRatio, float near, float far)
+{
+    float top = near * tan(fov * 0.5f);
+    float bottom = -top;
+    float left = bottom * aspectRatio;
+    float right = top * aspectRatio;
+
+    Matrix4x4 perspectiveMatrix;
+    perspectiveMatrix.elements[0] = near/right;
+    perspectiveMatrix.elements[5] = near/top;
+    perspectiveMatrix.elements[10] = -(far + near)/(far - near);
+    perspectiveMatrix.elements[11] = -1;
+    perspectiveMatrix.elements[14] = -2*(far*near)/(far - near);
+    perspectiveMatrix.elements[15] = 0;
+
+    return perspectiveMatrix;
+
 }
 
 void Matrix4x4::printMatrix()
