@@ -58,6 +58,10 @@ float Vector3::squaredLength()
 Vector3 Vector3::normalizeVector()
 {
     float length = sqrt(squaredLength());
+    if (length == 0)
+    {
+        return *this;
+    }
     return Vector3(x/length, y/length, z/length);
 }
 

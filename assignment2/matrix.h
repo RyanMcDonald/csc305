@@ -1,6 +1,8 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+#include "vector.h"
+
 class Matrix3x3;
 class Matrix4x4;
 
@@ -96,6 +98,9 @@ public:
     void rotateZ(float r);
 
     Matrix3x3 to3x3();
+
+    Matrix4x4 buildOrthoProjectionMatrix(float left, float right, float bottom, float top, float near, float far);
+    Matrix4x4 buildViewMatrix(Vector3 eye, Vector3 gaze, Vector3 up);
 
     void printMatrix();
 

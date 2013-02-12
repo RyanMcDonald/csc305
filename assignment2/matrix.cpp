@@ -62,7 +62,7 @@ Matrix3x3 Matrix3x3::operator * (Matrix3x3 matrix)
 {
     Matrix3x3 temp;
 
-    // Get rid of the 1's in the diagonal
+    // Get rid of the 1's in the diagonal; we want to start with a zero-matrix
     temp.elements[0] = temp.elements[4] = temp.elements[8] = 0;
 
     for (int row = 0; row < 3; row++)
@@ -88,8 +88,8 @@ void Matrix3x3::scale(float x, float y, float z)
 
 void Matrix3x3::translate(float x, float y, float z)
 {
-    elements[0] += x;
-    elements[4] += y;
+    elements[6] += x;
+    elements[7] += y;
     elements[8] += z;
 }
 
@@ -151,6 +151,13 @@ Matrix4x4 Matrix3x3::to4x4()
     temp.elements[15] = 1;
 
     return temp;
+}
+
+void Matrix3x3::printMatrix()
+{
+    std::cout << "|" << elements[0] << ", " << elements[3] << ", " << elements[6] << "|" << std::endl;
+    std::cout << "|" << elements[1] << ", " << elements[4] << ", " << elements[7] << "|" << std::endl;
+    std::cout << "|" << elements[2] << ", " << elements[5] << ", " << elements[8] << "|" << std::endl;
 }
 
 /**************************
@@ -218,9 +225,9 @@ void Matrix4x4::scale(float x, float y, float z, float w)
 
 void Matrix4x4::translate(float x, float y, float z, float w)
 {
-    elements[0] += x;
-    elements[5] += y;
-    elements[10] += z;
+    elements[12] += x;
+    elements[13] += y;
+    elements[14] += z;
     elements[15] += w;
 }
 
@@ -277,11 +284,55 @@ Matrix3x3 Matrix4x4::to3x3()
     return temp;
 }
 
-void Matrix3x3::printMatrix()
+/*  eye - location that the eye "sees from", i.e., center of a lens.
+**  gaze - any vector in the direction that the viewer is looking
+**  up - any vector in the plane that both bisects the viewer’s head into right and left halves and points
+**      “to the sky” for a person standing on the ground.
+*/
+Matrix4x4 Matrix4x4::buildViewMatrix(Vector3 eye, Vector3 gaze, Vector3 up)
 {
-    std::cout << "|" << elements[0] << ", " << elements[3] << ", " << elements[6] << "|" << std::endl;
-    std::cout << "|" << elements[1] << ", " << elements[4] << ", " << elements[7] << "|" << std::endl;
-    std::cout << "|" << elements[2] << ", " << elements[5] << ", " << elements[8] << "|" << std::endl;
+    Matrix4x4 viewMatrix;
+
+    // See page 147 in textbook
+    float gazeLength = sqrt(gaze.squaredLength());
+    std::cout << "Gaze length: " << gazeLength << std::endl;
+
+    Vector3 w = gaze.normalizeVector() * (-1);
+    Vector3 u = up.crossProduct(w).normalizeVector();
+    Vector3 v = w.crossProduct(u);
+
+    viewMatrix.elements[0] = u.x;
+    viewMatrix.elements[1] = v.x;
+    viewMatrix.elements[2] = w.x;
+    viewMatrix.elements[3] = 0;
+
+    viewMatrix.elements[4] = u.y;
+    viewMatrix.elements[5] = v.y;
+    viewMatrix.elements[6] = w.y;
+    viewMatrix.elements[7] = 0;
+
+    viewMatrix.elements[8] = u.z;
+    viewMatrix.elements[9] = v.z;
+    viewMatrix.elements[10] = w.z;
+    viewMatrix.elements[11] = 0;
+
+    Matrix4x4 moveEyeToOrigin;
+    moveEyeToOrigin.translate((-1)*eye.x, (-1)*eye.y, (-1)*eye.z, 0);
+    return viewMatrix * moveEyeToOrigin;
+}
+
+Matrix4x4 Matrix4x4::buildOrthoProjectionMatrix(float left, float right, float bottom, float top, float near, float far)
+{
+    Matrix4x4 orthoMatrix;
+
+    orthoMatrix.elements[0] = 2/(right - left);
+    orthoMatrix.elements[5] = 2/(top - bottom);
+    orthoMatrix.elements[10] = 2/(far - near);
+    orthoMatrix.elements[12] = (-1)*((right + left)/(right - left));
+    orthoMatrix.elements[13] = (-1)*((top + bottom)/(top - bottom));
+    orthoMatrix.elements[14] = (-1)*((far + near)/(far - near));
+
+    return orthoMatrix;
 }
 
 void Matrix4x4::printMatrix()
