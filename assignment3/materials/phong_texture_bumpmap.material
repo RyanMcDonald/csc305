@@ -1,0 +1,4 @@
+vertex phong_texture_bumpmap.vs
+fragment phong_texture_bumpmap.fs
+texture colormap.png
+bumpmap displacement.png
